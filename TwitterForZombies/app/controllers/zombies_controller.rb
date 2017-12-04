@@ -10,6 +10,23 @@ class ZombiesController < ApplicationController
   # GET /zombies/1
   # GET /zombies/1.json
   def show
+    @zombie = Zombie.find(params[:id])
+    # respond_to do |format|
+    #   format.html do
+    #     if @zombie.decomp == 'Dead (again)' 
+    #       render :dead_again
+    #     end
+    #   end
+    #   format.json { render json: @zombie }
+    # end
+    
+    
+    # if @zombie.decomp == 'Dead (again)'
+    #   render :dead_again
+    # end
+    
+    render json: @zombie
+    
   end
 
   # GET /zombies/new
@@ -24,7 +41,7 @@ class ZombiesController < ApplicationController
   # POST /zombies
   # POST /zombies.json
   def create
-    @zombie = Zombie.new(zombie_params)
+    @zombie = Zombie.new(params[:zombie])
 
     respond_to do |format|
       if @zombie.save
@@ -54,10 +71,33 @@ class ZombiesController < ApplicationController
   # DELETE /zombies/1
   # DELETE /zombies/1.json
   def destroy
+    @zombie = Zombie.find(params[:id])
     @zombie.destroy
+    
     respond_to do |format|
-      format.html { redirect_to zombies_url, notice: 'Zombie was successfully destroyed.' }
-      format.json { head :no_content }
+      format.html { redirect_to zombies_url }
+      format.json { head :ok }
+      formt.js
+    end
+  end
+  
+  def decomp
+    @zombie = Zombie.find(params[:id])
+    if @zombie.decomp == 'Dead (again)'
+      render json: @zombie.to_json(only: :decomp), status: :unprocessable_entity
+    else
+      render json: @zombie.to_json(only: :decomp)
+    end
+  end
+  
+  def custom_decomp
+    @zombie = Zombie.find(params[:id])
+    @zombie.decomp = params[:zombie][:decomp]
+    @zombie.save
+    
+    respond_to do |format|
+      format.js
+      format.json { render json: @zombie.to_json(only :decomp) }
     end
   end
 
