@@ -1,0 +1,4 @@
+form.new_zombie input.submit {
+  background-image: url(/assets/button.png);
+}
+
